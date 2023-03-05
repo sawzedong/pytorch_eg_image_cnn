@@ -3,7 +3,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class ImageClassificationBase(nn.Module):
-    
     def training_step(self, batch):
         images, labels = batch 
         out = self(images)                  # Generate predictions
@@ -34,9 +33,7 @@ def accuracy(outputs, labels):
 
 
 class NaturalSceneClassification(ImageClassificationBase):
-    
     def __init__(self):
-        
         super().__init__()
         self.network = nn.Sequential(
             
@@ -65,6 +62,5 @@ class NaturalSceneClassification(ImageClassificationBase):
             nn.ReLU(),
             nn.Linear(512,6)
         )
-    
     def forward(self, xb):
         return self.network(xb)
