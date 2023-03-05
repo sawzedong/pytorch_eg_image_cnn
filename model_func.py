@@ -9,15 +9,9 @@ device = get_default_device()
 batch_size = 128
 
 @torch.no_grad()
-def evaluate(model):
+def evaluate(model, val_dl):
     # evaluate model performance
-    test_dir = "./input/seg_test/seg_test/"
-    test_dataset = ImageFolder(test_dir,transforms.Compose([
-        transforms.Resize((150,150)),transforms.ToTensor()
-    ]))
-    test_loader = DeviceDataLoader(DataLoader(test_dataset, batch_size*2), device)
-    model.eval()
-    outputs = [model.validation_step(batch) for batch in test_loader]
+    outputs = [model.validation_step(batch) for batch in val_dl]
     return model.validation_epoch_end(outputs)
 
 def fit(epochs, lr, model, train_loader, val_loader, opt_func = torch.optim.SGD):

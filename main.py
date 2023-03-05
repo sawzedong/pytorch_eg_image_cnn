@@ -9,7 +9,7 @@ from device_manager import get_default_device, to_device, DeviceDataLoader
 from model_func import evaluate, fit
 
 val_size = 250
-batch_size = 128
+batch_size = 32
 num_epochs = 30
 opt_func = torch.optim.Adam
 lr = 0.001
@@ -39,6 +39,12 @@ if __name__ == "__main__":
 
     model = to_device(NaturalSceneClassification(),device)
     history = fit(num_epochs, lr, model, train_dl, val_dl, opt_func)
-    print("After training:", evaluate(model))
+
+    test_dir = "./input/seg_test/seg_test/"
+    test_dataset = ImageFolder(test_dir,transforms.Compose([
+        transforms.Resize((150,150)),transforms.ToTensor()
+    ]))
+    test_loader = DeviceDataLoader(DataLoader(test_dataset, batch_size*2), device)
+    print("After training:", evaluate(model, test_loader))
 
     torch.save(model.state_dict(), 'model_cnnimage.pth')
