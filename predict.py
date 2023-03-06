@@ -6,8 +6,14 @@ from model import NaturalSceneClassification
 from device_manager import get_default_device, to_device
 from PIL import Image
 from model_func import predict_img_class
+import argparse
 
 device = get_default_device()
+
+parser = argparse.ArgumentParser(description='PyTorch Super Res Example')
+parser.add_argument('--savePath', default="model_cnnimage.pth", help='path to load model from')
+parser.add_argument('--imgPath', default="./input/seg_pred/seg_pred/591.jpg", help='path to load image from')
+opt = parser.parse_args()
 
 train_dir = "./input/seg_train/seg_train/"
 dataset = ImageFolder(train_dir,transform = transforms.Compose([
@@ -16,10 +22,10 @@ dataset = ImageFolder(train_dir,transform = transforms.Compose([
 
 if __name__ == "__main__":
     model = to_device(NaturalSceneClassification(),device)
-    model.load_state_dict(torch.load('./model_saves/cnnimage_200epoch_3convlayer.pth', map_location=device))
+    model.load_state_dict(torch.load(opt.savePath, map_location=device))
 
     # select image to predict
-    img = Image.open("./input/seg_pred/seg_pred/591.jpg")
+    img = Image.open(opt.imgPath)
     img = transforms.ToTensor()(img)
     plt.imshow(img.permute(1,2,0))
     print(f"Predicted Class : {predict_img_class(img,model)}")
