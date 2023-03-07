@@ -14,6 +14,8 @@ device = get_default_device()
 
 parser = argparse.ArgumentParser(description='PyTorch Super Res Example')
 parser.add_argument('--nEpochs', type=int, default=30, help='number of epochs to train for')
+parser.add_argument('--layers', type=int, default=3, help='number of CNN layers to use. accepts 1-4. default=3')
+parser.add_argument('--kernel_size', type=int, default=3, help='kernel size of CNN layers. default=3')
 parser.add_argument('--savePath', default="model_cnnimage.pth", help='path to save model to')
 parser.add_argument('--useFullDataset', action='store_true', help='whether to use full dataset or not (uses mini dataset instead)')
 opt = parser.parse_args()
@@ -45,7 +47,7 @@ if __name__ == "__main__":
     train_dl = DeviceDataLoader(DataLoader(train_data, batch_size, shuffle = True, num_workers = 4, pin_memory = True), device)
     val_dl = DeviceDataLoader(DataLoader(val_data, batch_size*2, num_workers = 4, pin_memory = True), device)
 
-    model = to_device(NaturalSceneClassification(),device)
+    model = to_device(NaturalSceneClassification(layers=opt.layers, kernel_size=opt.kernel_size),device)
     history = fit(num_epochs, lr, model, train_dl, val_dl, opt_func)
 
     test_dir = f"./{dir_name}/seg_test/seg_test/"

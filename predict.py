@@ -12,6 +12,8 @@ device = get_default_device()
 
 parser = argparse.ArgumentParser(description='PyTorch Super Res Example')
 parser.add_argument('--savePath', default="model_cnnimage.pth", help='path to load model from')
+parser.add_argument('--layers', type=int, default=3, help='number of CNN layers to use. accepts 1-4. default=3')
+parser.add_argument('--kernel_size', type=int, default=3, help='kernel size of CNN layers. default=3')
 parser.add_argument('--imgPath', default="./input/seg_pred/seg_pred/591.jpg", help='path to load image from')
 opt = parser.parse_args()
 
@@ -21,7 +23,7 @@ dataset = ImageFolder(train_dir,transform = transforms.Compose([
 ]))
 
 if __name__ == "__main__":
-    model = to_device(NaturalSceneClassification(),device)
+    model = to_device(NaturalSceneClassification(layers=opt.layers, kernel_size=opt.kernel_size),device)
     model.load_state_dict(torch.load(opt.savePath, map_location=device))
 
     # select image to predict
