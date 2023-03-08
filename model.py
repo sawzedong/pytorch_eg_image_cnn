@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torchsummary import summary
 
 class ImageClassificationBase(nn.Module):
     def training_step(self, batch):
@@ -36,41 +37,40 @@ class NaturalSceneClassification(ImageClassificationBase):
     def __init__(self, layers=3, kernel_size=3):
         super().__init__()
         k = kernel_size
-        convnetwork = 0
+        self.network = 0
         if layers == 1:
-            convnetwork = nn.Sequential(
+            self.network = nn.Sequential(
                 nn.Conv2d(3, 32, kernel_size = k, padding = 1), nn.ReLU(), nn.Conv2d(32,64, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.MaxPool2d(2,2)
             )
         elif layers == 2:
-            convnetwork = nn.Sequential(
+            self.network = nn.Sequential(
                 nn.Conv2d(3, 32, kernel_size = k, padding = 1), nn.ReLU(), nn.Conv2d(32,64, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.MaxPool2d(2,2),
                 nn.Conv2d(64, 128, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.Conv2d(128 ,128, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.MaxPool2d(2,2)
             )
         elif layers == 4:
-            convnetwork = nn.Sequential(
+            self.network = nn.Sequential(
                 nn.Conv2d(3, 32, kernel_size = k, padding = 1), nn.ReLU(), nn.Conv2d(32,64, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.MaxPool2d(2,2),
                 nn.Conv2d(64, 128, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.Conv2d(128 ,128, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.MaxPool2d(2,2),
                 nn.Conv2d(128, 256, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.Conv2d(256,256, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.MaxPool2d(2,2),
                 nn.Conv2d(256, 512, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.Conv2d(512,512, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.MaxPool2d(2,2)
             )
         else:
-            convnetwork = nn.Sequential(
+            self.network = nn.Sequential(
                 nn.Conv2d(3, 32, kernel_size = k, padding = 1), nn.ReLU(), nn.Conv2d(32,64, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.MaxPool2d(2,2),
                 nn.Conv2d(64, 128, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.Conv2d(128 ,128, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.MaxPool2d(2,2),
                 nn.Conv2d(128, 256, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.Conv2d(256,256, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.MaxPool2d(2,2)
             )
-        matrix_size = convnetwork(torch.rand(32, 3, 150, 150)).shape
+        matrix_size = self.network(torch.rand(32, 3, 150, 150)).shape
         matrix_columns = 1
         for j in matrix_size: matrix_columns*=j
         matrix_columns = matrix_columns // 32
-        postconvnetwork = nn.Sequential(
-            nn.Flatten(),
-            nn.Linear(matrix_columns,1024),
-            nn.ReLU(),
-            nn.Linear(1024, 512),
-            nn.ReLU(),
-            nn.Linear(512,6)
-        )
-        self.network = nn.Sequential(convnetwork, postconvnetwork)
+        self.network.append(nn.Flatten())
+        self.network.append(nn.Linear(matrix_columns,1024))
+        self.network.append(nn.ReLU())
+        self.network.append(nn.Linear(1024,512))
+        self.network.append(nn.ReLU())
+        self.network.append(nn.Linear(512,6))
+    def layer_summary(self):
+        summary(self.network, (3, 150, 150))
     def forward(self, xb):
         return self.network(xb)

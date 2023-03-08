@@ -25,7 +25,8 @@ dataset = ImageFolder(train_dir,transform = transforms.Compose([
 if __name__ == "__main__":
     model = to_device(NaturalSceneClassification(layers=opt.layers, kernel_size=opt.kernel_size),device)
     model.load_state_dict(torch.load(opt.savePath, map_location=device))
-
+    model.layer_summary()
+    
     # select image to predict
     img = Image.open(opt.imgPath)
     img = transforms.ToTensor()(img)

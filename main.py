@@ -48,7 +48,9 @@ if __name__ == "__main__":
     val_dl = DeviceDataLoader(DataLoader(val_data, batch_size*2, num_workers = 4, pin_memory = True), device)
 
     model = to_device(NaturalSceneClassification(layers=opt.layers, kernel_size=opt.kernel_size),device)
+    model.layer_summary()
     history = fit(num_epochs, lr, model, train_dl, val_dl, opt_func)
+    model.layer_summary()
 
     test_dir = f"./{dir_name}/seg_test/seg_test/"
     test_dataset = ImageFolder(test_dir,transforms.Compose([

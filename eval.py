@@ -22,7 +22,8 @@ batch_size = 32
 if __name__ == "__main__":
     model = to_device(NaturalSceneClassification(layers=opt.layers, kernel_size=opt.kernel_size),device)
     model.load_state_dict(torch.load(opt.modelPath, map_location=device))
-
+    model.layer_summary()
+    
     test_dir = f"./{dir_name}/seg_test/seg_test/"
     test_dataset = ImageFolder(test_dir,transforms.Compose([
         transforms.Resize((150,150)),transforms.ToTensor()
