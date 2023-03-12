@@ -10,7 +10,7 @@ import argparse
 
 device = get_default_device()
 
-parser = argparse.ArgumentParser(description='PyTorch Super Res Example')
+parser = argparse.ArgumentParser(description='PyTorch Image Recognition Example')
 parser.add_argument('--modelPath', default="model_cnnimage.pth", help='path to load model from')
 parser.add_argument('--layers', type=int, default=3, help='number of CNN layers to use. accepts 1-4. default=3')
 parser.add_argument('--kernel_size', type=int, default=3, help='kernel size of CNN layers. default=3')
