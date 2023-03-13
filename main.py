@@ -26,6 +26,10 @@ opt_func = torch.optim.Adam
 lr = 0.001
 
 if __name__ == "__main__":
+    # override protection
+    if os.path.exists(opt.savePath):
+        raise RuntimeError("File already exists at specified model save path")
+
     # analysing dataset
     dataset_size = [0, 0, 0] # pred, test, train
     for dirname, _, filenames in os.walk(f'./input'):
