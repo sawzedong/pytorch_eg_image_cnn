@@ -37,28 +37,31 @@ class NaturalSceneClassification(ImageClassificationBase):
     def __init__(self, layers=3, kernel_size=3):
         super().__init__()
         k = kernel_size
+        w = 1
+        if(k == 5): w = 2
+        elif (k == 7): w=3 
         self.network = 0
         if layers == 1:
             self.network = nn.Sequential(
-                nn.Conv2d(3, 32, kernel_size = k, padding = 1), nn.ReLU(), nn.Conv2d(32,64, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.MaxPool2d(2,2)
+                nn.Conv2d(3, 32, kernel_size = k, padding = w), nn.ReLU(), nn.Conv2d(32,64, kernel_size = k, stride = w, padding = w), nn.ReLU(), nn.MaxPool2d(2,2)
             )
         elif layers == 2:
             self.network = nn.Sequential(
-                nn.Conv2d(3, 32, kernel_size = k, padding = 1), nn.ReLU(), nn.Conv2d(32,64, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.MaxPool2d(2,2),
-                nn.Conv2d(64, 128, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.Conv2d(128 ,128, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.MaxPool2d(2,2)
+                nn.Conv2d(3, 32, kernel_size = k, padding = w), nn.ReLU(), nn.Conv2d(32,64, kernel_size = k, stride = w, padding = w), nn.ReLU(), nn.MaxPool2d(2,2),
+                nn.Conv2d(64, 128, kernel_size = k, stride = w, padding = w), nn.ReLU(), nn.Conv2d(128 ,128, kernel_size = k, stride = w, padding = w), nn.ReLU(), nn.MaxPool2d(2,2)
             )
         elif layers == 4:
             self.network = nn.Sequential(
-                nn.Conv2d(3, 32, kernel_size = k, padding = 1), nn.ReLU(), nn.Conv2d(32,64, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.MaxPool2d(2,2),
-                nn.Conv2d(64, 128, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.Conv2d(128 ,128, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.MaxPool2d(2,2),
-                nn.Conv2d(128, 256, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.Conv2d(256,256, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.MaxPool2d(2,2),
-                nn.Conv2d(256, 512, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.Conv2d(512,512, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.MaxPool2d(2,2)
+                nn.Conv2d(3, 32, kernel_size = k, padding = w), nn.ReLU(), nn.Conv2d(32,64, kernel_size = k, stride = w, padding = w), nn.ReLU(), nn.MaxPool2d(2,2),
+                nn.Conv2d(64, 128, kernel_size = k, stride = w, padding = w), nn.ReLU(), nn.Conv2d(128 ,128, kernel_size = k, stride = w, padding = w), nn.ReLU(), nn.MaxPool2d(2,2),
+                nn.Conv2d(128, 256, kernel_size = k, stride = w, padding = w), nn.ReLU(), nn.Conv2d(256,256, kernel_size = k, stride = w, padding = w), nn.ReLU(), nn.MaxPool2d(2,2),
+                nn.Conv2d(256, 512, kernel_size = k, stride = w, padding = w), nn.ReLU(), nn.Conv2d(512,512, kernel_size = k, stride = w, padding = w), nn.ReLU(), nn.MaxPool2d(2,2)
             )
         else:
             self.network = nn.Sequential(
-                nn.Conv2d(3, 32, kernel_size = k, padding = 1), nn.ReLU(), nn.Conv2d(32,64, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.MaxPool2d(2,2),
-                nn.Conv2d(64, 128, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.Conv2d(128 ,128, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.MaxPool2d(2,2),
-                nn.Conv2d(128, 256, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.Conv2d(256,256, kernel_size = k, stride = 1, padding = 1), nn.ReLU(), nn.MaxPool2d(2,2)
+                nn.Conv2d(3, 32, kernel_size = k, padding = w), nn.ReLU(), nn.Conv2d(32,64, kernel_size = k, stride = w, padding = w), nn.ReLU(), nn.MaxPool2d(2,2),
+                nn.Conv2d(64, 128, kernel_size = k, stride = w, padding = w), nn.ReLU(), nn.Conv2d(128 ,128, kernel_size = k, stride = w, padding = w), nn.ReLU(), nn.MaxPool2d(2,2),
+                nn.Conv2d(128, 256, kernel_size = k, stride = w, padding = w), nn.ReLU(), nn.Conv2d(256,256, kernel_size = k, stride = w, padding = w), nn.ReLU(), nn.MaxPool2d(2,2)
             )
         matrix_size = self.network(torch.rand(32, 3, 150, 150)).shape
         matrix_columns = 1
