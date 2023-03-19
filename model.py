@@ -39,7 +39,6 @@ class NaturalSceneClassification(ImageClassificationBase):
         k = kernel_size
         w = 1
         if(k == 5): w = 2
-        elif (k == 7): w=3 
         self.network = 0
         if layers == 1:
             self.network = nn.Sequential(
